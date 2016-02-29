@@ -1,0 +1,16 @@
+{
+  "name": "ooi-ui-mobile",
+  "version": "1.0.0",
+  "description": "A mobile-friendly front end for ooi",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryan Maciel",
+  "license": "ISC",
+  "dependencies": {
+    "backbone": "^1.2.3",
+    "express": "^4.13.4",
+    "nunjucks": "^2.3.0"
+  }
+}
