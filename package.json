@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "backbone": "^1.2.3",
+    "bower": "^1.7.7",
     "express": "^4.13.4",
     "nunjucks": "^2.3.0"
   }

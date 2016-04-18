@@ -1,0 +1,21 @@
+<html lang = "eng">
+	<head>
+	</head>
+	<body>
+		<script>
+			$(document).ready(function(){
+				var tocArray = new tocArray();
+
+				var storedArray = localStorage.getItem("tocArray");
+				if(storedArray === undefined || storedArray === null){
+					$.when(tocArray.fetch()).done(function(){
+
+						localStorage.set("tocArray", tocArray);
+					});
+				}else{
+					storedArray
+				}
+			});
+		</script>
+	</body>
+</html>

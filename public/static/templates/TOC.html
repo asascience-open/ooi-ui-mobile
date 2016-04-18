@@ -1,0 +1,91 @@
+<html lang = "en">
+    <head>
+        <script src="/lib/jquery/dist/jquery.min.js"></script>
+        <script src="/lib/underscore/underscore-min.js"></script>
+        <script src="/lib/backbone/backbone.js"></script>
+        <script src="/js/models/arraysModel.js"></script>
+        <script src="/js/views/TOCView.js"></script>
+        <link rel="stylesheet" href="/lib/MultiLevelPushMenu/jquery.multilevelpushmenu.min.css"/>
+        <script src="lib/MultiLevelPushMenu/jquery.multilevelpushmenu.js"></script>
+    </head>
+    <body>
+        <div id="menu"></div>
+        <script>
+            
+            $(document).ready(function(){
+                var tocArray = new arrays();
+
+                //Check if the local storage has the tocArray.
+                var storedArray = localStorage.getItem("tocArray")
+                if(storedArray === undefined || storedArray === null){
+                    //Fetch the array.
+                    $.when(tocArray.fetch()).done(function(){
+                        tocArrayFetched(tocArray);
+
+                        //store the tocArray for future use.
+                        localStorage.setItem("tocArray", tocArray);
+                    });
+                }else{
+                    //TODO: This always causes an error.
+                    tocArrayFetched(storedArray);
+                }
+                //Called once the tocArray has been retrieved (model.fetch or from window.localStorage) 
+                function tocArrayFetched(tocArrayParam){
+                    var tocView = new TOCView();
+
+                    tocView.render();
+
+                    var tocModel = {}
+                    for(var i = 0; i < tocArrayParam.models.length; i++){
+                        var model = tocArrayParam.models[i];
+                        if(tocModel[model.attributes.array_name] === undefined){
+                            tocModel[model.attributes.array_name] = {};
+                        }
+                        if(tocModel[model.attributes.array_name][model.attributes.assembly_name] === undefined){
+                            tocModel[model.attributes.array_name][model.attributes.assembly_name] = [];
+                        }
+                        tocModel[model.attributes.array_name][model.attributes.assembly_name].push({'long_display_name' : model.attributes.long_display_name, 'reference_designator' : model.attributes.reference_designator});
+                    }
+                    //For some reason, this object has a null key. This is a quick fix.
+                    delete tocModel.null;
+
+                    var arrMenu = function parseFunction(tocModelParam){
+                        //check if we are passed an array or object.
+                        if(Object.prototype.toString.call( tocModelParam ) === '[object Array]'){
+                            var arrayResult = [];
+                            for(var i = 0; i < tocModelParam.length; i++){ 
+                                //If we are passed an array, we will assume that it is an array of strings.
+                                if(tocModelParam[i] !== null){
+                                    arrayResult.push({"name" : tocModelParam[i].long_display_name, 'id' : tocModelParam[i].reference_designator, 'link' : '/plot?reference_designator=' + tocModelParam[i].reference_designator});
+                                }
+                            }
+                            return arrayResult;
+                        }else{
+                            var result = [];
+                            //console.log(tocModelParam);
+                            //In this case assume we are passed a dictionary.
+                            for(var currentKey in tocModelParam){
+                                //Check if the object is a string
+                                if (typeof tocModelParam[currentKey] === 'string'){
+                                    result.push({'name' : tocModelParam[currentKey]});
+                                }else{
+                                    //This case should be run if the object is an array or a dictionary.
+                                    var nestedItems = parseFunction(tocModelParam[currentKey]);
+                                    if(nestedItems !== [] && nestedItems !== null && nestedItems !== undefined && nestedItems.length > 1){
+                                        result.push({'name' : currentKey, 'items' : [{'title' : currentKey, 'items' : nestedItems}]});
+                                    }
+                                }
+                            }
+                            return result;
+                        }
+                    }
+                    //The arrMenu needs to be enveloped like this because arrMenu is a recursive function and this is an issue that only applies to the first level.
+                    var res = [{'title' : 'Stations', 'items' : arrMenu(tocModel)}];
+                    $('#menu').multilevelpushmenu({
+                        menu: res
+                   });
+                }
+            });
+        </script>
+    </body>
+</html>
