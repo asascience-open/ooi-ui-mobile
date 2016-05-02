@@ -20,14 +20,17 @@
                 if(storedArray === undefined || storedArray === null){
                     //Fetch the array.
                     $.when(tocArray.fetch()).done(function(){
-                        tocArrayFetched(tocArray);
+                        //console.log(JSON.stringify(tocArray));
+                        console.log(JSON.stringify(tocArray).length);
 
+                        tocArrayFetched(tocArray);
+                        
                         //store the tocArray for future use.
-                        localStorage.setItem("tocArray", tocArray);
+                        localStorage.setItem("tocArray", JSON.stringify(tocArray));
                     });
                 }else{
                     //TODO: This always causes an error.
-                    tocArrayFetched(storedArray);
+                    tocArrayFetched(JSON.parse(storedArray));
                 }
                 //Called once the tocArray has been retrieved (model.fetch or from window.localStorage) 
                 function tocArrayFetched(tocArrayParam){
@@ -42,9 +45,12 @@
                             tocModel[model.attributes.array_name] = {};
                         }
                         if(tocModel[model.attributes.array_name][model.attributes.assembly_name] === undefined){
-                            tocModel[model.attributes.array_name][model.attributes.assembly_name] = [];
+                            tocModel[model.attributes.array_name][model.attributes.assembly_name] = {};
                         }
-                        tocModel[model.attributes.array_name][model.attributes.assembly_name].push({'long_display_name' : model.attributes.long_display_name, 'reference_designator' : model.attributes.reference_designator});
+                        if(tocModel[model.attributes.array_name][model.attributes.assembly_name][model.attributes.long_display_name] === undefined){
+                            tocModel[model.attributes.array_name][model.attributes.assembly_name][model.attributes.long_display_name] = [];
+                        }
+                        tocModel[model.attributes.array_name][model.attributes.assembly_name][model.attributes.long_display_name].push({'stream_name': model.attributes.stream_name, 'long_display_name' : model.attributes.long_display_name, 'reference_designator' : model.attributes.reference_designator});
                     }
                     //For some reason, this object has a null key. This is a quick fix.
                     delete tocModel.null;
@@ -56,7 +62,7 @@
                             for(var i = 0; i < tocModelParam.length; i++){ 
                                 //If we are passed an array, we will assume that it is an array of strings.
                                 if(tocModelParam[i] !== null){
-                                    arrayResult.push({"name" : tocModelParam[i].long_display_name, 'id' : tocModelParam[i].reference_designator, 'link' : '/plot?reference_designator=' + tocModelParam[i].reference_designator});
+                                    arrayResult.push({"name" : tocModelParam[i].stream_name, 'id' : tocModelParam[i].reference_designator, 'link' : '/plot?reference_designator=' + tocModelParam[i].reference_designator + "&stream_name=" + tocModelParam[i].stream_name});
                                 }
                             }
                             return arrayResult;
