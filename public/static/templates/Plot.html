@@ -1,14 +1,19 @@
+{% extends "Base.html" %}
 <html lang = "eng">
 	<head>
-		<script src="/lib/jquery/dist/jquery.min.js"></script>
+		<!--<script src="/lib/jquery/dist/jquery.min.js"></script>
         <script src="/lib/underscore/underscore-min.js"></script>
         <script src="/lib/backbone/backbone.js"></script>
-        <script src="/lib/parseuri/parseuri.js"></script>
+        <script src="/lib/parseuri/parseuri.js"></script>-->
+        {% block js %}
+        <script src="/js/compiled/partials/plotViewPartials.js"></script>
         <script src="/js/models/arraysModel.js"></script>
         <script src="/js/models/plottingModel.js"></script>
         <script src="/js/views/PlotView.js"></script>
+        {% endblock %}
 	</head>
 	<body>
+		{% block content %}
 		<script>
 			$(document).ready(function(){			
 
@@ -24,5 +29,6 @@
 				}
 			});
 		</script>
+		{% endblock %}
 	</body>
 </html>

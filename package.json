@@ -12,6 +12,11 @@
     "backbone": "^1.2.3",
     "bower": "^1.7.7",
     "express": "^4.13.4",
-    "nunjucks": "^2.3.0"
+    "nunjucks": "^2.3.0",
+    "pug": "^0.1.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jst": "^1.0.0"
   }
 }

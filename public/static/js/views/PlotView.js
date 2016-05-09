@@ -20,13 +20,14 @@ var PlotView = Backbone.View.extend({
 		});
 	},
 	tagName: "div",
-	template: _.template("<div></div>"),
+	template: JST["PlotView.html"],
 	events: {
 		//This needs to be an action that is triggered when a plot button is clicked.
 		"keydown" : "plotButtonPressed"
 	},
 	render: function(){
 		//Render menus and plots and stuff.
+		this.$el.html(this.template());
 	},
 	plotButtonPressed: function(){
 		self = this;
