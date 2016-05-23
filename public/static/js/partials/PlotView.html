@@ -1,14 +1,17 @@
 <p>PlotView.html</p>
-<div>
-	<div id="datetimepicker1">
-		<input type='text' class="form-control" />
-         	<span class="input-group-addon">
-            	<span class="glyphicon glyphicon-calendar"></span>
-            </span>
-	</div>
-</div>
-<script src="/lib/bootstrap3-datetimepicker"></script>
+<h1>Select Dates</h1>
+<p>StartDate</p>
+<input id="startDatePicker"></input>
+<p>End Date</p>
+<input id="endDatePicker"></input>
+<p>Select y vars</p>
+<select id="yVarSelection"><% for(var i = 0; i < yVars.length; i++){ %>
+	<option><%= yVars[i] %></option>
+	<% } %>
+</select>
+<button id="submitButton">submit</button>
+<div id="highChartsContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 <script>
-	//I feel like this is bad practice.
-	$('#datetimepicker1').datetimepicker();
+	$('#startDatePicker').pickadate()
+	$('#endDatePicker').pickadate()
 </script>

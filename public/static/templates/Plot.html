@@ -6,6 +6,10 @@
         <script src="/lib/backbone/backbone.js"></script>
         <script src="/lib/parseuri/parseuri.js"></script>-->
         {% block js %}
+        <script src="/lib/highcharts/highcharts.js"></script>
+        <script src="/lib/pickadate/lib/picker.js"></script>
+        <script src="/lib/pickadate/lib/picker.date.js"></script>
+        <link href="/lib/pickadate/lib/themes/default.css" rel="stylesheet">
         <script src="/js/compiled/partials/plotViewPartials.js"></script>
         <script src="/js/models/arraysModel.js"></script>
         <script src="/js/models/plottingModel.js"></script>
@@ -14,16 +18,25 @@
 	</head>
 	<body>
 		{% block content %}
+		<div id="plotView"></div>
 		<script>
-			$(document).ready(function(){			
+			$(document).ready(function(){
 
 				//First determine what we are plotting based on the url params.
 				var query = parseUri(window.location).queryKey;
 				var ref_des = query.reference_designator;
 				var stream = query.stream_name;
+				var streamModel = new arrayModel();
+				streamModel.url = "http://localhost:4000/uframe/stream?stream_name="+stream;
+				
+				console.log("ref des: " +  ref_des + ", stream: " + stream);
+				$.when(streamModel.fetch()).done(function(){
 
-				var pv = new PlotView(new plottingModel, new arrayModel, stream, ref_des);
-				pv.render();
+					//var pv = new PlotView({new plottingModel, new arrayModel, stream, ref_des, $el: $("div#plotView")});
+					var pv = new PlotView({el: $("#plotView"), model: new plottingModel, attributes:{"stream":stream, "referenceDesignator": ref_des, "streamModel" : streamModel}});
+				});
+
+				
 				
 				function arrayFetched(array){
 				}

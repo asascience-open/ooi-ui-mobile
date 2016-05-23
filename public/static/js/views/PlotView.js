@@ -1,41 +1,65 @@
 var PlotView = Backbone.View.extend({
-	initialize: function(model, streamModel, stream, referenceDesignator){
+	initialize: function(){
+		this.render();
 		//To be set when the user interacts with the ui.
 		this.xvars = undefined;
 		this.yvars = undefined;
 		this.startDate = undefined;
 		this.endDate = undefined;
-
-		//Set attributes from parameters.
-		this.stream = stream;
-		this.referenceDesignator = referenceDesignator;
-		this.model = model;
-		this.streamModel = streamModel
+		this.stream = undefined;
+		this.referenceDesignator = undefined;
 
 		//Get the stream to plot.
 		var self = this;
-		this.streamModel.url = "http://localhost:4000/uframe/stream?stream_name=" + stream;
-		$.when(this.streamModel.fetch()).done(function(){
-			console.log("ref_des: " + self.streamModel.attributes.stream_name);
-		});
+		//this.streamModel.url = "http://localhost:4000/uframe/stream?stream_name=" + stream;
+		//$.when(this.streamModel.fetch()).done(function(){
+			//console.log("ref_des: " + self.streamModel.attributes.stream_name);
+		//});
 	},
 	tagName: "div",
-	template: JST["PlotView.html"],
+	template: JST["public/static/js/partials/PlotView.html"],
 	events: {
 		//This needs to be an action that is triggered when a plot button is clicked.
-		"keydown" : "plotButtonPressed"
+		"click #submitButton" : "plotButtonPressed",
+
 	},
 	render: function(){
-		//Render menus and plots and stuff.
-		this.$el.html(this.template());
+		//Get the yvars.
+		var streamYVars = this.attributes.streamModel.attributes.variables;
+		this.$el.html(this.template({yVars:streamYVars}));
 	},
 	plotButtonPressed: function(){
+		//TODO make this get plot data and show a plot.
+		console.log("plot button pressed");
+
+		//parse the startDate and endDate inputs and convert it to an ISO string.
+		var startDate = new Date(this.$el.find("#startDatePicker").val()).toISOString();
+		var endDate	= new Date(this.$el.find("#endDatePicker").val()).toISOString();
+
+		//Get the yvar that the user should have selected to plot.
+		var yvar = this.$el.find("#yVarSelection").val();
+		console.log("yvar: " + yvar);
 		self = this;
-		this.model.updateDataUrl(ref_des, stream, pv.xvars, pv.yvars, pv.startDate, pv.endDate);
-		$.when(this.plottingModel.fetch()).done(function(){
-			console.log(JSON.stringify(self.plottingModel));
-			//Here we will have some data in the plotting model. We will need to pass this to the view and plot it.
+		this.model.updateDataUrl(this.attributes.referenceDesignator, this.attributes.stream, "time", yvar, startDate, endDate);
+		$.when(this.model.fetch()).done(function(){
+			console.log(JSON.stringify(self.model.attributes.chartableData));
+			console.log("plotting data returned in plotview");
+			//Create a chart:
+			self.$el.find("#highChartsContainer").highcharts({
+				chart:{
+					type:"line"
+				},
+				title: self.attributes,
+				xAxis:{
+					type:"datetime"
+				},
+				series:[{
+					name: "plotted data",
+					data: self.model.attributes.chartableData
+				}]
+			});
+
 		});
 	}
 
-})
+});
