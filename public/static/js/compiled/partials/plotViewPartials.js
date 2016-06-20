@@ -11,7 +11,7 @@ __p += '\n\t<option>' +
 ((__t = ( yVars[i] )) == null ? '' : __t) +
 '</option>\n\t';
  } ;
-__p += '\n</select>\n<button id="submitButton">submit</button>\n<div id="highChartsContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>\n<script>\n\t$(\'#startDatePicker\').pickadate()\n\t$(\'#endDatePicker\').pickadate()\n</script>';
+__p += '\n</select>\n<button id="submitButton">submit</button>\n<div id="highChartsContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>\n<script>\n\t$(document).ready(function(){\n\t\tvar $startInput = $(\'#startDatePicker\').pickadate();\n\t\tvar $endInput = $(\'#endDatePicker\').pickadate();\n\t\t/*var startDatePicker = $startInput.pickadate("picker");\n\t\tvar endDatePicker = $endInput.pickadate("end picker");\n\t\t\t$(\'#startDatePicker\').focus(function(){\n\t\t\t\tstartDatePicker.open();\n\t\t\t});*/\n\t});\n\n</script>\n';
 
 }
 return __p

@@ -1,6 +1,6 @@
 var plottingModel = Backbone.Model.extend({
 	parse: function(fetchedData){
-		
+
 		var chartableData = [];
 
 		//TODO: move this logic to ooi_ui_services.
@@ -11,7 +11,7 @@ var plottingModel = Backbone.Model.extend({
 			//Convert seconds since 1900 to time since 1970.
 			var seconds = currentArray[this.xvars];
 			var msSince1970 = (seconds - 2208988800) * 1000;
-
+			currentArray[this.xvars] = msSince1970;
 			chartableData.push([currentArray[this.xvars], currentArray[this.yvars]]);
 		}
 		//create an array that is easy to chart.
@@ -22,7 +22,7 @@ var plottingModel = Backbone.Model.extend({
 		reference_designator: undefined
 	},
 	initialize: function(){
-		
+
 	},
 	updateDataUrl: function(instrument, stream, xvars, yvars, startdate, endDate){
 		//TODO make this work with multiple x/y vars.

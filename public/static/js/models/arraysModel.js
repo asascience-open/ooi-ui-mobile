@@ -13,7 +13,7 @@ var arrayModel = Backbone.Model.extend({
 
 var arrays = Backbone.Collection.extend({
     model:arrayModel,
-    url: 'http://localhost:4000/uframe/stream?',
+    url: 'http://localhost:4000/uframe/stream?min=True',
     parse: function(data){
         return data.streams;
     }

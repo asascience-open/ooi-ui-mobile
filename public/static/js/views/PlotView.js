@@ -25,7 +25,7 @@ var PlotView = Backbone.View.extend({
 	},
 	render: function(){
 		//Get the yvars.
-		var streamYVars = this.attributes.streamModel.attributes.variables;
+		var streamYVars = this.attributes.streamModel.attributes.streams[0].variables;
 		this.$el.html(this.template({yVars:streamYVars}));
 	},
 	plotButtonPressed: function(){

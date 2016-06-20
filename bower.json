@@ -59,7 +59,9 @@
     "jquery-sticky-table-headers": "https://github.com/jmosbech/StickyTableHeaders.git",
     "slick-carousel": "~1.5.9",
     "bootbox.js": "bootbox#~4.4.0",
-    "pickadate": "^3.5.6"
+    "pickadate": "^3.5.6",
+    "multilevelpushmenu": "^2.1.4",
+    "bower-parseUri": "bower-parseuri#^1.2.2"
   },
   "resolutions": {
     "jquery": "~2.1.1",

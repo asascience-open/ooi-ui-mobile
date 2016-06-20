@@ -7,15 +7,15 @@
         {% block js %}
             <script src="/js/models/arraysModel.js"></script>
             <script src="/js/views/TOCView.js"></script>
-            <link rel="stylesheet" href="/lib/MultiLevelPushMenu/jquery.multilevelpushmenu.min.css"/>
-            <script src="lib/MultiLevelPushMenu/jquery.multilevelpushmenu.js"></script>
+            <link rel="stylesheet" href="/lib/MultiLevelPushMenu/jquery.multilevelpushmenu.css"/>
+            <script src="lib/MultiLevelPushMenu/jquery.multilevelpushmenu.min.js"></script>
         {% endblock %}
     </head>
     <body>
         {% block content %}
             <div id="menu"></div>
             <script>
-                
+
                 $(document).ready(function(){
                     var tocArray = new arrays();
 
@@ -24,9 +24,9 @@
                     //if(storedArray === undefined || storedArray === null){
                         //Fetch the array.
                         $.when(tocArray.fetch()).done(function(){
-
+                            console.log("toc array fetched");
                             tocArrayFetched(tocArray);
-                            
+
                             //store the tocArray for future use.
                       //      localStorage.setItem("tocArray", JSON.stringify(tocArray));
                         });
@@ -34,7 +34,7 @@
                         //TODO: This always causes an error.
                       //  tocArrayFetched(JSON.parse(storedArray));
                     //}
-                    //Called once the tocArray has been retrieved (model.fetch or from window.localStorage) 
+                    //Called once the tocArray has been retrieved (model.fetch or from window.localStorage)
                     function tocArrayFetched(tocArrayParam){
                         var tocView = new TOCView();
 
@@ -61,7 +61,7 @@
                             //check if we are passed an array or object.
                             if(Object.prototype.toString.call( tocModelParam ) === '[object Array]'){
                                 var arrayResult = [];
-                                for(var i = 0; i < tocModelParam.length; i++){ 
+                                for(var i = 0; i < tocModelParam.length; i++){
                                     //If we are passed an array, we will assume that it is an array of strings.
                                     if(tocModelParam[i] !== null){
                                         arrayResult.push({"name" : tocModelParam[i].stream_name, 'id' : tocModelParam[i].reference_designator, 'link' : '/plot?reference_designator=' + tocModelParam[i].reference_designator + "&stream_name=" + tocModelParam[i].stream_name});
@@ -89,6 +89,8 @@
                         }
                         //The arrMenu needs to be enveloped like this because arrMenu is a recursive function and this is an issue that only applies to the first level.
                         var res = [{'title' : 'Stations', 'items' : arrMenu(tocModel)}];
+                        alert("Parsing Finished");
+                        console.log("toc array parsed");
                         $('#menu').multilevelpushmenu({
                             menu: res
                        });

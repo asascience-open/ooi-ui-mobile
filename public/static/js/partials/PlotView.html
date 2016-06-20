@@ -12,6 +12,14 @@
 <button id="submitButton">submit</button>
 <div id="highChartsContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 <script>
-	$('#startDatePicker').pickadate()
-	$('#endDatePicker').pickadate()
+	$(document).ready(function(){
+		var $startInput = $('#startDatePicker').pickadate();
+		var $endInput = $('#endDatePicker').pickadate();
+		/*var startDatePicker = $startInput.pickadate("picker");
+		var endDatePicker = $endInput.pickadate("end picker");
+			$('#startDatePicker').focus(function(){
+				startDatePicker.open();
+			});*/
+	});
+
 </script>
