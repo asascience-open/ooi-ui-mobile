@@ -80,7 +80,7 @@
                                         //This case should be run if the object is an array or a dictionary.
                                         var nestedItems = parseFunction(tocModelParam[currentKey]);
                                         if(nestedItems !== [] && nestedItems !== null && nestedItems !== undefined && nestedItems.length > 1){
-                                            result.push({'name' : currentKey, 'items' : [{'title' : currentKey, 'items' : nestedItems}]});
+                                            result.push({'name' : currentKey, 'items' :  nestedItems});//[{'title' : currentKey, 'items' : nestedItems}]});
                                         }
                                     }
                                 }
@@ -88,14 +88,104 @@
                             }
                         }
                         //The arrMenu needs to be enveloped like this because arrMenu is a recursive function and this is an issue that only applies to the first level.
-                        var res = [{'title' : 'Stations', 'items' : arrMenu(tocModel)}];
-                        alert("Parsing Finished");
+                        var res = {'title' : 'Stations', 'items' : arrMenu(tocModel)};
                         console.log("toc array parsed");
-                        $('#menu').multilevelpushmenu({
-                            menu: res
-                       });
+                        /*$('#menu').multilevelpushmenu({
+                            menu: res,
+                            collapsed: false,
+                            onItemClick:function(event, menuLevelHolder, item){
+                                window.location.href = item.find( 'a:first' ).attr( 'href' );;
+                            }
+                        });*/
+                        console.log(res);
+                        var menu = new Menu(res);
+                        $('#menu').append(menu.currentDom);
+                        menu.domUpdateCallback = function(dom){
+                          console.log("dom update");
+                          $('#menu').empty().append(dom);
+                        }
+
+                        console.log("menu rendered");
                     }
                 });
+                function Menu(jsonData){
+                  //indexState is a list of indexes that respresents the current selection.
+                  this.indexState = [];
+                  this.currentDom = undefined
+                  this.domUpdateCallback = undefined;
+                  this.jsonData = jsonData;
+                  this.updateIndexState([]);
+                }
+                Menu.prototype.getJsonDataAtIndex = function(index){
+                  var currentJsonData = this.jsonData.items;
+                  if(index.length === 0)return currentJsonData;
+                  for(var i = 0; i < index.length; i++){
+                    currentJsonData = currentJsonData[index[i]].items;
+                  }
+                  return currentJsonData;
+                };
+
+                //Update the index state and render new dom to match.
+                Menu.prototype.updateIndexState = function(newIndex){
+                  this.index = newIndex;
+                  console.log(JSON.stringify(newIndex));
+                  var menuDiv = $("<div></div>");
+                  var indexStateJson = this.getJsonDataAtIndex(newIndex);
+                  console.log(indexStateJson);
+                  for(var i = 0; i < indexStateJson.length; i++){
+                    var currentMenuItem = new MenuItem(indexStateJson[i]);
+                    var self = this;
+                    currentMenuItem.dom.attr("index-value", i);
+
+                    //Create an event handler for the click to show the next layer.
+                    currentMenuItem.dom.click(function(e){
+                      var currentIndexState = self.indexState;
+                      currentIndexState.push($(e.delegateTarget).attr("index-value"));
+                      self.updateIndexState(currentIndexState);
+                    });
+
+                    menuDiv.append(currentMenuItem.dom);
+                  }
+                  this.currentDom = menuDiv;
+                  if(this.domUpdateCallback!==undefined)this.domUpdateCallback(menuDiv);
+                };
+
+                function MenuItem(jsonData){
+                  this.jsonData = jsonData;
+                  this.items = [];
+                  this.parentNode = undefined;
+                  /*if(jsonData !== undefined){
+                    //if the
+                    if(Object.prototype.toString.call( jsonData.items ) === '[object Array]'){
+                      for(var i = 0;  i < jsonData.items.length; i++){
+                        var nextMenuItem = new MenuItem(jsonData.items[i]);
+                        nextMenuItem.parentNode = nextMenuItem;
+                        nextMenuItem.hidden = true;
+                        this.addSubItem(nextMenuItem);
+                      }
+                    }else{
+
+                    }
+                  }*/
+                  //If the current item is finished do not create any dom.
+                  this.dom = this.createMenuElementsForItem(jsonData);
+                }
+                MenuItem.prototype.addSubItem = function addSubItems(item){
+                    //Items should have a name and either a items field or a link field.
+                    //createMenuElement(itemsArray);
+                    //this.append(itemsArray);
+                    this.items.push(item);
+                };
+
+                //Creates the dom based on MenuItem "items" passed in.
+                MenuItem.prototype.createMenuElementsForItem = function(item){
+                  var itemDiv = $("<div></div>");
+                  itemDiv.append("<a" + (item.link === undefined ? "" : " href=\"" + item.link + "\"") + ">" + item.name + "</a>");
+                  return itemDiv;
+                };
+
+
+
             </script>
         {% endblock %}
     </body>

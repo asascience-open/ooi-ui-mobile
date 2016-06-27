@@ -1,7 +1,8 @@
 <p>PlotView.html</p>
 <h1>Select Dates</h1>
 <p>StartDate</p>
-<input id="startDatePicker"></input>
+<input></input>
+<div id=startDatePicker></div>
 <p>End Date</p>
 <input id="endDatePicker"></input>
 <p>Select y vars</p>
@@ -15,6 +16,9 @@
 	$(document).ready(function(){
 		var $startInput = $('#startDatePicker').pickadate();
 		var $endInput = $('#endDatePicker').pickadate();
+		var startPicker = $startInput.pickadate("picker")
+		startPicker.close();
+		console.log();
 		/*var startDatePicker = $startInput.pickadate("picker");
 		var endDatePicker = $endInput.pickadate("end picker");
 			$('#startDatePicker').focus(function(){

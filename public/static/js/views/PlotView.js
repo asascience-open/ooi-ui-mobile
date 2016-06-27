@@ -38,7 +38,9 @@ var PlotView = Backbone.View.extend({
 
 		//Get the yvar that the user should have selected to plot.
 		var yvar = this.$el.find("#yVarSelection").val();
+		var param_name = this.attributes.streamModel.attributes.streams[0].parameter_display_name[this.attributes.streamModel.attributes.streams[0].variables.indexOf(yvar)];
 		console.log("yvar: " + yvar);
+		console.log(param_name);
 		self = this;
 		this.model.updateDataUrl(this.attributes.referenceDesignator, this.attributes.stream, "time", yvar, startDate, endDate);
 		$.when(this.model.fetch()).done(function(){
@@ -52,6 +54,9 @@ var PlotView = Backbone.View.extend({
 				title: self.attributes,
 				xAxis:{
 					type:"datetime"
+				},
+				yAxis:{
+					title:{text: param_name}
 				},
 				series:[{
 					name: "plotted data",
